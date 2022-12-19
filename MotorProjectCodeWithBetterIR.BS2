@@ -1,0 +1,86 @@
+' {$STAMP BS2}
+' {$PBASIC 2.5}
+
+i VAR Word
+reset VAR Word
+programStart VAR Word
+motion VAR Word
+programStart = 1 'Ensuring that the clearner doesnt start immediatley
+
+DO
+
+  'If the door is opened then  reset is set to 0
+  IF IN0 = 1 THEN
+    reset = 0
+    programStart = 0
+  ENDIF
+
+  'Once the door is closed, perform the door cleaning process
+  IF IN0=0 AND reset = 0 AND programStart = 0 THEN
+    GOSUB checkDoorClosed
+  ENDIF
+
+
+  GOSUB IR
+  'If motion is detected in front of the Sensor then CLean the door
+  IF motion=0 THEN
+    GOSUB checkHandMotion
+  ENDIF
+
+
+LOOP
+
+
+
+doorClean:
+
+'Moving the motor forwards to clean the handle and then back
+FOR i = 1 TO 50
+  PULSOUT 12, 410
+  PAUSE 20
+NEXT
+
+PAUSE 500
+
+FOR i = 1 TO 47
+  PULSOUT 12, 1100
+  PAUSE 20
+NEXT
+
+reset = 1
+RETURN
+
+'Sending a signla from the IR LED and then checking if the sensor detects it
+IR:
+  FREQOUT 2,1,65535
+  motion=IN3
+  PAUSE 15
+  RETURN
+
+
+
+checkDoorClosed:
+PAUSE 500
+
+'Checking to make sure door wasn't opened again
+'If it has been opened within 0.5secons then do not do the cleaning
+IF IN0 = 0 THEN
+  GOSUB doorclean
+  RETURN
+ELSE
+  reset = 1
+  RETURN
+ENDIF
+
+checkHandMotion:
+PAUSE 100 'with 2k resistor for IR LED
+
+'Checking to make sure motion is still detected
+'If there is no motion within 0.5secons then do not do the cleaning
+GOSUB IR
+IF motion=0 THEN
+  GOSUB doorClean
+  RETURN
+ELSE
+  RETURN
+ENDIF
