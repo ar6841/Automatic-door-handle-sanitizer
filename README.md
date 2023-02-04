@@ -8,5 +8,5 @@ Video demonstration: https://youtu.be/U2d8OJDwEXU
 
 Circuit layout is shown below 
 
+![image](https://user-images.githubusercontent.com/96152967/216748950-82982478-b048-463b-b678-566fc126546e.png)
 
-![Circuit Diagram for Mechatronics](https://user-images.githubusercontent.com/96152967/216748909-f1f1438a-1001-4ace-bc92-f6559a8c04e3.png)
